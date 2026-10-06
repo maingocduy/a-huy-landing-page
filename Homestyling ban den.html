@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khởi Minh Homestyling - Midnight Luxury</title>
+    
+    <!-- Google Fonts: Mulish -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        km: {
+                            /* BẢNG MÀU MIDNIGHT COPPER DỰA TRÊN ẢNH MẪU */
+                            bg: '#0A0908',       /* Nền đen sâu, hơi nghiêng tone ấm */
+                            panel: '#141210',    /* Đen than cho các khối nổi bật */
+                            copper: '#C88A47',   /* Màu Đồng Thau rực rỡ từ chữ Beverage */
+                            accent: '#E0A96D',   /* Đồng sáng để hover */
+                            text_main: '#EAE6E1',/* Trắng ngà cho tiêu đề */
+                            text_muted: '#A39C93',/* Xám trầm cho đoạn văn bản */
+                            border: 'rgba(200, 138, 71, 0.2)', /* Viền màu đồng siêu mờ */
+                            dark: '#000000'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"SVN-North Carossela"', 'serif'],
+                        sans: ['"Mulish"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Nhúng font SVN-North Carossela */
+        @font-face {
+            font-family: 'SVN-North Carossela';
+            src: url('SVN-North-Carossela.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            background-color: #0A0908;
+            color: #EAE6E1;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            font-family: 'Mulish', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-serif {
+            font-family: 'SVN-North Carossela', serif !important;
+            color: #C88A47; /* Set mặc định màu Copper cho Heading */
+        }
+
+        .text-white { color: #EAE6E1 !important; }
+
+        /* --- STYLES: Animations & Layout --- */
+        .reveal-up { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+
+        .btn-arrow svg { transition: transform 0.3s ease; }
+        .group:hover .btn-arrow svg { transform: translateX(4px); }
+
+        .bg-luxury-interior {
+            background-image: url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .glass-panel {
+            background: rgba(20, 18, 16, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(200, 138, 71, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Accordion */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-in-out, opacity 0.4s ease-in-out;
+            opacity: 0;
+        }
+        .accordion-item.active .accordion-content { grid-template-rows: 1fr; opacity: 1; }
+        .accordion-inner { overflow: hidden; }
+        .accordion-icon { transition: transform 0.4s ease, color 0.3s ease; }
+        .accordion-item.active .accordion-icon { transform: rotate(180deg); color: #C88A47; }
+        .accordion-item.active .accordion-title { color: #EAE6E1; }
+
+        /* Tabs */
+        .tab-content {
+            display: none; opacity: 0; transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-content.active { display: grid; opacity: 1; transform: translateY(0); }
+        .tab-btn { position: relative; transition: color 0.3s ease; }
+        .tab-btn::after {
+            content: ''; position: absolute; bottom: -6px; left: 0; width: 0; height: 1px;
+            background-color: #C88A47; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-btn:hover::after { width: 100%; background-color: #E0A96D; }
+        .tab-btn.active { color: #C88A47; font-weight: 500; }
+        .tab-btn.active::after { width: 100%; background-color: #C88A47; }
+
+        /* Timeline */
+        .timeline-axis { position: absolute; left: 20px; top: 0; bottom: 0; width: 1px; background-color: rgba(200, 138, 71, 0.3); }
+        @media (min-width: 768px) { .timeline-axis { left: 50%; transform: translateX(-50%); } }
+        
+        .timeline-dot {
+            position: absolute; left: 20px; width: 12px; height: 12px;
+            background-color: #0A0908; border: 2px solid #C88A47;
+            transform: translate(-50%, -50%); top: 50%; z-index: 10; border-radius: 50%;
+        }
+        @media (min-width: 768px) { .timeline-dot { left: 50%; } }
+        
+        .img-wrapper { overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .img-zoom { transition: transform 0.8s ease; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85) contrast(1.1); }
+        .group:hover .img-zoom { transform: scale(1.05); filter: brightness(1) contrast(1.1); }
+        .reveal-item { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .reveal-item.is-visible { opacity: 1; transform: translateY(0); }
+
+        .img-zoom-wrapper { overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.05); }
+        .hairline-bottom { border-bottom: 1px solid rgba(200, 138, 71, 0.15); }
+
+        /* Slider */
+        .slide-content { opacity: 0; visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; transform: translateY(10px); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slide-content.active { opacity: 1; visibility: visible; position: relative; transform: translateY(0); }
+        .nav-btn { transition: all 0.3s ease; }
+        .nav-btn:hover { background-color: rgba(200, 138, 71, 0.1); border-color: #C88A47; }
+        
+        /* Footer Image Focus */
+        .image-container { position: relative; overflow: hidden; border: 1px solid rgba(200, 138, 71, 0.2); }
+        .bg-image { transition: transform 1.5s ease; will-change: transform; filter: brightness(0.6); }
+        .image-container:hover .bg-image { transform: scale(1.03); filter: brightness(0.8); }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-km-copper selection:text-km-bg">
+
+    <!-- 1. Header (Dark Mode) -->
+    <header class="fixed top-0 w-full z-50 bg-km-bg/95 backdrop-blur-md border-b border-km-border py-5 px-6 md:px-12 flex justify-between items-center shadow-sm">
+        <a href="#" class="font-serif tracking-[0.2em] text-km-text_main text-lg md:text-xl uppercase cursor-pointer hover:text-km-copper transition-colors">
+            Khởi Minh
+        </a>
+        <nav class="hidden lg:flex items-center gap-10 font-sans text-[11px] uppercase tracking-[0.2em] font-medium text-km-text_muted">
+            <a href="#homestyling-la-gi" class="hover:text-km-copper transition-colors">Homestyling là gì</a>
+            <a href="#7-buoc-mansion" class="hover:text-km-copper transition-colors">7 Bước Mansion</a>
+            <a href="#vi-sao-chon-chung-toi" class="hover:text-km-copper transition-colors">Hệ Sinh Thái</a>
+            <a href="#tin-tuc" class="hover:text-km-copper transition-colors">Tin tức</a>
+        </nav>
+        <a href="#lien-he" class="px-8 py-2.5 bg-transparent border border-km-copper/50 text-km-copper text-[11px] font-medium tracking-[0.2em] uppercase hover:bg-km-copper hover:text-km-bg transition-all duration-300 rounded-full">
+            Liên hệ
+        </a>
+    </header>
+
+    <main class="pt-24">
+
+        <!-- Phần Mở Đầu (Hero Section) -->
+        <section id="hero" class="relative w-full h-[calc(100vh-96px)] flex flex-col justify-end items-center bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1600607686527-6fb886090705?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');">
+            <div class="absolute inset-0 bg-km-bg/70 z-0"></div>
+
+            <div class="relative z-10 w-full max-w-[1400px] px-6 md:px-12 pb-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+                <div class="drop-shadow-2xl">
+                    <p class="font-sans text-xl md:text-2xl font-light mb-2 tracking-[0.3em] text-km-text_muted uppercase">Kiến tạo di sản</p>
+                    <h2 class="font-serif text-6xl md:text-8xl tracking-wide text-km-copper">độc bản.</h2>
+                </div>
+                
+                <div>
+                    <a href="#homestyling-la-gi" class="inline-flex items-center gap-3 bg-km-panel border border-km-border text-km-text_main px-8 py-4 text-[11px] font-medium tracking-[0.2em] uppercase hover:border-km-copper hover:text-km-copper transition-all duration-300 rounded-full">
+                        Khám Phá <span>&rarr;</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Homestyling là gì ? -->
+        <section id="homestyling-la-gi" class="max-w-[1100px] w-full mx-auto py-24 px-4 md:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20 reveal-up">
+                <h1 class="font-serif text-5xl md:text-6xl mb-5 tracking-tight text-km-copper">Homestyling.</h1>
+                <h2 class="font-sans font-light tracking-[0.2em] text-sm md:text-base text-km-text_main uppercase mb-6">Nghệ thuật biến dinh thự thành di sản</h2>
+                <p class="text-km-text_muted text-base md:text-lg leading-relaxed font-light">
+                    Không chỉ là thiết kế hay trang trí đơn thuần – đó là nghệ thuật cá nhân hóa không gian sống. Chúng tôi biến dinh thự của bạn thành một di sản độc bản, nơi phản chiếu trọn vẹn phong cách, giá trị và câu chuyện riêng của gia đình.
+                </p>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-16 mb-16 hairline-bottom pb-4 reveal-up delay-100">
+                <button class="tab-btn active font-sans text-xs md:text-sm tracking-[0.2em] uppercase text-km-text_muted pb-2 outline-none" onclick="openTab(event, 'tab-world')">
+                    Thế giới
+                </button>
+                <button class="tab-btn font-sans text-xs md:text-sm tracking-[0.2em] uppercase text-km-text_muted pb-2 outline-none" onclick="openTab(event, 'tab-vn')">
+                    Việt Nam
+                </button>
+                <button class="tab-btn font-sans text-xs md:text-sm tracking-[0.2em] uppercase text-km-text_muted pb-2 outline-none" onclick="openTab(event, 'tab-km')">
+                    Khởi Minh
+                </button>
+            </div>
+
+            <div class="relative min-h-[500px] reveal-up delay-200">
+                <div id="tab-world" class="tab-content active grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
+                    <div class="img-container shadow-2xl h-[400px] md:h-[500px] w-full rounded-2xl overflow-hidden border border-km-border">
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1000" alt="World" class="w-full h-full object-cover filter brightness-90">
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <h3 class="font-serif text-4xl md:text-5xl text-km-text_main mb-6 leading-snug">Định hình từ những <br>thị trường xa xỉ</h3>
+                        <p class="text-km-text_muted leading-relaxed font-light mb-5 text-[16px]">
+                            Tại những thủ phủ xa xỉ như New York, London hay Dubai, Homestylist luôn là <strong class="font-medium text-km-copper">người đầu tiên gia chủ gặp gỡ</strong>. Họ lắng nghe, thấu hiểu mong muốn sâu kín nhất và định hình toàn bộ ý tưởng trước khi bất kỳ kiến trúc sư hay nhà thầu nào can thiệp.
+                        </p>
+                        <p class="text-km-text_muted leading-relaxed font-light text-[16px]">
+                            Ở đó, Homestylist đóng vai trò như một <strong class="font-medium text-km-copper">cố vấn độc lập</strong> – người bảo vệ tầm nhìn thẩm mỹ và đảm bảo mọi quyết định đều phục vụ lợi ích tối cao của gia chủ.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="tab-vn" class="tab-content grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
+                    <div class="img-container shadow-2xl h-[400px] md:h-[500px] w-full md:order-2 rounded-2xl overflow-hidden border border-km-border">
+                        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=1000" alt="Vietnam" class="w-full h-full object-cover filter brightness-90">
+                    </div>
+                    <div class="flex flex-col justify-center md:order-1">
+                        <h3 class="font-serif text-4xl md:text-5xl text-km-text_main mb-6 leading-snug">Thực trạng <br>tại Việt Nam</h3>
+                        <p class="text-km-text_muted leading-relaxed font-light mb-5 text-[16px]">
+                            Khái niệm Homestyling thực thụ vẫn còn là một mảnh ghép thiếu vắng. Homestylist thường bị nhầm lẫn với người đi sắp xếp lại không gian hiện hữu ở bước cuối cùng.
+                        </p>
+                        <p class="text-km-text_muted leading-relaxed font-light text-[16px]">
+                            Ngay cả khi được mời tham gia từ sớm, họ vẫn thiếu đi tiếng nói độc lập, dễ dàng bị chi phối bởi bản vẽ của kiến trúc sư hay danh mục sản phẩm từ các nhà cung cấp nội thất.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="tab-km" class="tab-content grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
+                    <div class="img-container shadow-2xl h-[400px] md:h-[500px] w-full rounded-2xl overflow-hidden border border-km-border">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1000" alt="Khoi Minh" class="w-full h-full object-cover filter brightness-90">
+                    </div>
+                    <div class="flex flex-col justify-center group">
+                        <h3 class="font-serif text-4xl md:text-5xl text-km-copper mb-6 leading-snug">Khởi Minh kiến tạo <br>sự thay đổi...</h3>
+                        <p class="text-km-text_main leading-relaxed font-medium mb-4 italic text-[16px]">
+                            Khởi Minh Homestyling mang đến một mô hình homestyling thực thụ, nơi gia chủ luôn là trung tâm của mọi quyết định.
+                        </p>
+                        <p class="text-km-text_muted leading-relaxed font-light mb-10 text-[16px]">
+                            Cùng Khởi Minh, quá trình hoàn thiện dinh thự không còn là sự phiền toái hay lo âu. Nó trở thành một hành trình tận hưởng nghệ thuật kiến tạo không gian sống, để mỗi mét vuông đều kể câu chuyện di sản của riêng gia đình bạn.
+                        </p>
+                        <div>
+                            <a href="#" class="inline-flex justify-center items-center gap-3 bg-transparent border border-km-copper text-km-copper px-8 py-3.5 font-medium tracking-[0.2em] text-[11px] uppercase transition-all duration-300 rounded-full hover:bg-km-copper hover:text-km-bg">
+                                Khám phá dịch vụ
+                                <span class="btn-arrow">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Homestyling dành cho ai ? -->
+        <section class="bg-km-panel w-full relative py-24 border-y border-km-border">
+            <div class="max-w-[1200px] mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto mb-16 reveal-up">
+                    <h2 class="text-4xl md:text-5xl font-serif text-km-text_main mb-6">
+                        Homestyling <span class="text-km-copper">dành cho ai?</span>
+                    </h2>
+                    <p class="text-km-text_muted text-base md:text-lg leading-relaxed font-light">
+                        Dành cho những gia chủ thượng lưu, những người coi mỗi dinh thự là một di sản không chỉ để ở, mà để kể câu chuyện của chính mình, để lại dấu ấn cho thế hệ sau.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                    <div class="group relative h-[420px] md:h-[500px] overflow-hidden shadow-2xl reveal-up delay-100 cursor-pointer rounded-2xl border border-white/5">
+                        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=800" alt="Persona" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 z-0 filter brightness-75 group-hover:brightness-50">
+                        <div class="absolute inset-0 bg-gradient-to-t from-km-bg/90 via-km-bg/20 to-transparent z-10 transition-opacity duration-500"></div>
+                        <div class="absolute inset-0 z-20 flex flex-col justify-end p-6 md:p-8">
+                            <h3 class="font-serif text-3xl md:text-4xl text-km-copper transition-transform duration-500 ease-out transform group-hover:-translate-y-2">Bạn là ai?</h3>
+                            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out">
+                                <div class="overflow-hidden">
+                                    <p class="font-sans font-light text-sm md:text-base leading-relaxed text-km-text_main mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150">Một doanh nhân thành đạt, một nhà sưu tầm nghệ thuật, hay một gia chủ muốn xây dựng di sản đầu tiên...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group relative h-[420px] md:h-[500px] overflow-hidden shadow-2xl reveal-up delay-200 cursor-pointer rounded-2xl border border-white/5">
+                        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=800" alt="Persona" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 z-0 filter brightness-75 group-hover:brightness-50">
+                        <div class="absolute inset-0 bg-gradient-to-t from-km-bg/90 via-km-bg/20 to-transparent z-10 transition-opacity duration-500"></div>
+                        <div class="absolute inset-0 z-20 flex flex-col justify-end p-6 md:p-8">
+                            <h3 class="font-serif text-3xl md:text-4xl text-km-copper transition-transform duration-500 ease-out transform group-hover:-translate-y-2">Điều bạn đau đáu?</h3>
+                            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out">
+                                <div class="overflow-hidden">
+                                    <p class="font-sans font-light text-sm md:text-base leading-relaxed text-km-text_main mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150">Bạn không chắc mình muốn gì hay khó tìm được kiến trúc sư thực sự hiểu mình? Quá trình thiết kế đầy phiền toái...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group relative h-[420px] md:h-[500px] overflow-hidden shadow-2xl reveal-up delay-300 cursor-pointer rounded-2xl border border-white/5">
+                        <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&q=80&w=800" alt="Persona" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 z-0 filter brightness-75 group-hover:brightness-50">
+                        <div class="absolute inset-0 bg-gradient-to-t from-km-bg/90 via-km-bg/20 to-transparent z-10 transition-opacity duration-500"></div>
+                        <div class="absolute inset-0 z-20 flex flex-col justify-end p-6 md:p-8">
+                            <h3 class="font-serif text-3xl md:text-4xl text-km-copper transition-transform duration-500 ease-out transform group-hover:-translate-y-2">Thứ bạn cần?</h3>
+                            <div class="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out">
+                                <div class="overflow-hidden">
+                                    <p class="font-sans font-light text-sm md:text-base leading-relaxed text-km-text_main mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150">Một dinh thự không chỉ đẹp, mà còn là một di sản độc bản. Nơi mọi quyết định đều được kiểm soát và mang dấu ấn cá nhân.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Homestyling làm gì ? (FULL 7 BƯỚC) -->
+        <section class="bg-luxury-interior relative min-h-screen flex items-center justify-center py-24 px-4 md:px-8">
+            <div class="absolute inset-0 bg-km-bg/85 z-0"></div>
+
+            <div class="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center reveal-up">
+                
+                <div class="space-y-8 lg:pr-8">
+                    <h1 class="font-serif text-5xl md:text-6xl leading-tight text-km-text_main">
+                        Homestyling <br><span class="text-km-copper">làm gì?</span>
+                    </h1>
+                    
+                    <div class="space-y-6 text-km-text_muted font-light text-base md:text-lg leading-relaxed">
+                        <p><strong class="text-km-copper font-medium tracking-[0.1em]">MANSION</strong> là hành trình 7 bước tinh hoa, được thiết kế để biến dinh thự của bạn thành một di sản độc bản.</p>
+                        <p>Từ ý tưởng đầu tiên cho đến khi vận hành thực tế, chúng tôi đồng hành cùng bạn, đảm bảo mỗi chi tiết đều là một nét chạm hoàn mỹ, phản ánh trọn vẹn phong cách.</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 md:p-10 w-full rounded-2xl">
+                    <div class="space-y-1" id="accordion-container">
+                        <!-- M -->
+                        <div class="accordion-item active border-b border-km-border pb-1">
+                            <button class="w-full py-4 flex items-center justify-between text-left relative focus:outline-none group" onclick="toggleAccordion(this)">
+                                <span class="accordion-title font-sans text-sm md:text-base tracking-[0.2em] text-km-text_muted transition-colors uppercase group-hover:text-km-text_main font-light">
+                                    <span class="text-km-copper font-medium">M</span>ANIFEST - BIỂU LỘ
+                                </span>
+                                <svg class="accordion-icon w-4 h-4 text-km-copper group-hover:text-km-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-inner">
+                                    <p class="pb-6 pr-8 text-km-text_muted font-light text-sm md:text-[15px] leading-relaxed">Nhận diện Gia chủ - Thấu hiểu sâu sắc bản ngã và phong cách sống, tạo nền tảng định hướng xuyên suốt cho mọi dự án của gia đình.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- A -->
+                        <div class="accordion-item border-b border-km-border pb-1">
+                            <button class="w-full py-4 flex items-center justify-between text-left relative focus:outline-none group" onclick="toggleAccordion(this)">
+                                <span class="accordion-title font-sans text-sm md:text-base tracking-[0.2em] text-km-text_muted transition-colors uppercase group-hover:text-km-text_main font-light">
+                                    <span class="text-km-copper font-medium">A</span>LIGN - HÒA QUYỆN
+                                </span>
+                                <svg class="accordion-icon w-4 h-4 text-km-copper group-hover:text-km-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-inner">
+                                    <p class="pb-6 pr-8 text-km-text_muted font-light text-sm md:text-[15px] leading-relaxed">Nhận diện Dự án - Đồng bộ hóa tầm nhìn, thiết lập bài toán chuẩn mực cho Ban quản lý dự án nhằm đảm bảo tiêu chuẩn khắt khe nhất.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- N -->
+                        <div class="accordion-item border-b border-km-border pb-1">
+                            <button class="w-full py-4 flex items-center justify-between text-left relative focus:outline-none group" onclick="toggleAccordion(this)">
+                                <span class="accordion-title font-sans text-sm md:text-base tracking-[0.2em] text-km-text_muted transition-colors uppercase group-hover:text-km-text_main font-light">
+                                    <span class="text-km-copper font-medium">N</span>AVIGATE - DẪN LỐI
+                                </span>
+                                <svg class="accordion-icon w-4 h-4 text-km-copper group-hover:text-km-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-inner">
+                                    <p class="pb-6 pr-8 text-km-text_muted font-light text-sm md:text-[15px] leading-relaxed">Định hướng thiết kế - Vạch ra đường lối thẩm mỹ và công năng độc bản, dẫn dắt quá trình sáng tạo của đơn vị thiết kế.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- S -->
+                        <div class="accordion-item border-b border-km-border pb-1">
+                            <button class="w-full py-4 flex items-center justify-between text-left relative focus:outline-none group" onclick="toggleAccordion(this)">
+                                <span class="accordion-title font-sans text-sm md:text-base tracking-[0.2em] text-km-text_muted transition-colors uppercase group-hover:text-km-text_main font-light">
+                                    <span class="text-km-copper font-medium">S</span>CULPT - CHẠM KHẮC
+                                </span>
+                                <svg class="accordion-icon w-4 h-4 text-km-copper group-hover:text-km-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-inner">
+                                    <p class="pb-6 pr-8 text-km-text_muted font-light text-sm md:text-[15px] leading-relaxed">Tối ưu phương án Thiết kế - Tinh chỉnh, gọt giũa và hoàn thiện từng đường nét, biến ý tưởng thành những bản vẽ hoàn mỹ nhất.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- I -->
+                        <div class="accordion-item border-b border-km-border pb-1">
+                            <button class="w-full py-4 flex items-center justify-between text-left relative focus:outline-none group" onclick="toggleAccordion(this)">
+                                <span class="accordion-title font-sans text-sm md:text-base tracking-[0.2em] text-km-text_muted transition-colors uppercase group-hover:text-km-text_main font-light">
+                                    <span class="text-km-copper font-medium">I</span>MPRINT - GHI DẤU
+                                </span>
+                                <svg class="accordion-icon w-4 h-4 text-km-copper group-hover:text-km-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-inner">
+                                    <p class="pb-6 pr-8 text-km-text_muted font-light text-sm md:text-[15px] leading-relaxed">Tối ưu phương án Thi công - Giám sát khắt khe, đảm bảo tính nguyên bản và độ tinh xảo được hiện thực hóa trong quá trình xây dựng.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- O -->
+                        <div class="accordion-item border-b border-km-border pb-1">
+                            <button class="w-full py-4 flex items-center justify-between text-left relative focus:outline-none group" onclick="toggleAccordion(this)">
+                                <span class="accordion-title font-sans text-sm md:text-base tracking-[0.2em] text-km-text_muted transition-colors uppercase group-hover:text-km-text_main font-light">
+                                    <span class="text-km-copper font-medium">O</span>UTFIT - ĐIỂM TRANG
+                                </span>
+                                <svg class="accordion-icon w-4 h-4 text-km-copper group-hover:text-km-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-inner">
+                                    <p class="pb-6 pr-8 text-km-text_muted font-light text-sm md:text-[15px] leading-relaxed">Tối ưu trải nghiệm - Nâng tầm không gian bằng nghệ thuật sắp đặt nội ngoại thất, khơi dậy xúc cảm trong từng trải nghiệm sống.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- N -->
+                        <div class="accordion-item pb-1">
+                            <button class="w-full py-4 flex items-center justify-between text-left relative focus:outline-none group" onclick="toggleAccordion(this)">
+                                <span class="accordion-title font-sans text-sm md:text-base tracking-[0.2em] text-km-text_muted transition-colors uppercase group-hover:text-km-text_main font-light">
+                                    <span class="text-km-copper font-medium">N</span>OURISH - BỒI ĐẮP
+                                </span>
+                                <svg class="accordion-icon w-4 h-4 text-km-copper group-hover:text-km-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="accordion-inner">
+                                    <p class="pb-4 pr-8 text-km-text_muted font-light text-sm md:text-[15px] leading-relaxed">Tối ưu Vận hành - Đồng hành bảo tồn và không ngừng nâng tầm giá trị di sản qua thời gian.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 7 Bước Maison (Timeline) -->
+        <section id="7-buoc-mansion" class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-20 reveal-item">
+                <span class="font-sans text-[11px] font-medium tracking-[0.3em] text-km-copper uppercase mb-4 block">Hành trình 7 bước tinh hoa</span>
+                <h2 class="font-serif text-5xl md:text-6xl text-km-text_main mb-6 leading-tight">Kiến tạo Di sản.</h2>
+            </div>
+
+            <div class="relative mt-20">
+                <div class="timeline-axis"></div>
+
+                <!-- GIAI ĐOẠN 1 -->
+                <div class="relative flex flex-col md:grid md:grid-cols-2 gap-10 md:gap-20 items-center mb-24 md:mb-32 group reveal-item pl-10 md:pl-0">
+                    <div class="timeline-dot"></div>
+                    <div class="md:text-right order-2 md:order-1 md:pr-12">
+                        <div class="img-wrapper shadow-2xl h-[300px] md:h-[450px] rounded-2xl overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Khởi nguồn ý tưởng" class="img-zoom">
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2 md:pl-12">
+                        <span class="font-sans inline-block px-3 py-1 border border-km-copper/40 text-[10px] tracking-[0.2em] text-km-copper mb-5 rounded-full uppercase">Giai Đoạn 1</span>
+                        <h3 class="font-serif text-3xl md:text-4xl text-km-text_main mb-4">Khởi nguồn ý tưởng</h3>
+                        <p class="text-km-text_muted leading-relaxed font-light text-[15px] md:text-base">Từ những trao đổi sơ khởi (Pre-project) đến bước lập kế hoạch (Project Plan), Khởi Minh thấu hiểu sâu sắc bản ngã của chủ nhân. Chúng tôi nhận diện chuẩn xác nhu cầu gia chủ và định vị dự án, đặt nền móng vững chắc nhất cho một di sản tương lai.</p>
+                    </div>
+                </div>
+
+                <!-- GIAI ĐOẠN 2 -->
+                <div class="relative flex flex-col md:grid md:grid-cols-2 gap-10 md:gap-20 items-center mb-24 md:mb-32 group reveal-item pl-10 md:pl-0">
+                    <div class="timeline-dot"></div>
+                    <div class="order-1 md:order-1 md:text-right md:pr-12">
+                        <span class="font-sans inline-block px-3 py-1 border border-km-copper/40 text-[10px] tracking-[0.2em] text-km-copper mb-5 rounded-full uppercase">Giai Đoạn 2</span>
+                        <h3 class="font-serif text-3xl md:text-4xl text-km-text_main mb-4">Định hình phong cách</h3>
+                        <p class="text-km-text_muted leading-relaxed font-light text-[15px] md:text-base">Xuyên suốt quá trình chuẩn bị (Pre-design) và thiết kế công trình (Design), chúng tôi đóng vai trò như một cố vấn độc lập. Định hướng và chạm khắc từng phương án thiết kế để không gian thực sự mang đậm dấu ấn cá nhân và đạt chuẩn mực thẩm mỹ cao nhất.</p>
+                    </div>
+                    <div class="order-2 md:order-2 md:pl-12">
+                        <div class="img-wrapper shadow-2xl h-[300px] md:h-[450px] rounded-2xl overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Định hình phong cách" class="img-zoom">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GIAI ĐOẠN 3 -->
+                <div class="relative flex flex-col md:grid md:grid-cols-2 gap-10 md:gap-20 items-center mb-24 md:mb-32 group reveal-item pl-10 md:pl-0">
+                    <div class="timeline-dot"></div>
+                    <div class="md:text-right order-2 md:order-1 md:pr-12">
+                        <div class="img-wrapper shadow-2xl h-[300px] md:h-[450px] rounded-2xl overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Hiện thực hoá" class="img-zoom">
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2 md:pl-12">
+                        <span class="font-sans inline-block px-3 py-1 border border-km-copper/40 text-[10px] tracking-[0.2em] text-km-copper mb-5 rounded-full uppercase">Giai Đoạn 3</span>
+                        <h3 class="font-serif text-3xl md:text-4xl text-km-text_main mb-4">Hiện thực hoá di sản</h3>
+                        <p class="text-km-text_muted leading-relaxed font-light text-[15px] md:text-base">Quá trình thi công (Build) và trang trí hoàn thiện (Decor). Khởi Minh đồng hành giám sát khắt khe, ghi dấu ấn vào cấu trúc và điểm trang cho toàn bộ nội ngoại thất, tối ưu hóa trải nghiệm sống đến từng centimet.</p>
+                    </div>
+                </div>
+
+                <!-- GIAI ĐOẠN 4 -->
+                <div class="relative flex flex-col md:grid md:grid-cols-2 gap-10 md:gap-20 items-center reveal-item pl-10 md:pl-0">
+                    <div class="timeline-dot"></div>
+                    <div class="order-1 md:order-1 md:text-right md:pr-12">
+                        <span class="font-sans inline-block px-3 py-1 border border-km-copper/40 text-[10px] tracking-[0.2em] text-km-copper mb-5 rounded-full uppercase">Giai Đoạn 4</span>
+                        <h3 class="font-serif text-3xl md:text-4xl text-km-text_main mb-4">Chuyển giao & Tận hưởng</h3>
+                        <p class="text-km-text_muted leading-relaxed font-light text-[15px] md:text-base">Bước vào giai đoạn vận hành (Stage). Không chỉ dừng lại ở việc trao chìa khoá, Khởi Minh mang đến giải pháp bảo dưỡng và bồi đắp không gian, nâng tầm giá trị dinh thự để nó thực sự trở thành một di sản trường tồn theo thời gian.</p>
+                    </div>
+                    <div class="order-2 md:order-2 md:pl-12">
+                        <div class="img-wrapper shadow-2xl h-[300px] md:h-[450px] rounded-2xl overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Chuyển giao và tận hưởng" class="img-zoom">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Menu / Hệ sinh thái 9 chuyên gia (Grid Style Dark Luxury) -->
+        <section id="vi-sao-chon-chung-toi" class="w-full flex flex-col items-center py-28 px-6 sm:px-12 md:px-24 bg-km-panel border-y border-km-border">
+            <div class="text-center max-w-4xl mx-auto mb-20 reveal-up">
+                <h3 class="font-sans text-[11px] font-medium tracking-[0.3em] text-km-text_muted uppercase mb-6">
+                    Sự khác biệt từ tư duy độc lập
+                </h3>
+                <h2 class="font-serif text-6xl md:text-7xl text-km-copper mb-8 leading-tight">
+                    Hệ sinh thái.
+                </h2>
+                <p class="font-sans text-km-text_muted leading-relaxed text-base font-light max-w-2xl mx-auto">
+                    Là một đơn vị cố vấn độc lập, Khởi Minh quy tụ 9 lĩnh vực tinh hoa. Chúng tôi đảm bảo mọi quyết định đều đáng giá và phục vụ cho một tổng thể hoàn mỹ.
+                </p>
+            </div>
+
+            <!-- Grid 9 Chuyên Gia đầy đủ -->
+            <div class="w-full max-w-7xl mx-auto mb-16 reveal-up delay-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-16">
+                    <div class="border-t border-km-border pt-5 group cursor-default">
+                        <h5 class="font-serif text-3xl text-km-text_main mb-3 group-hover:text-km-copper transition-colors">Kiến trúc sư & Stylist</h5>
+                        <p class="font-sans text-[10px] tracking-[0.2em] uppercase text-km-copper">Định hình phong cách</p>
+                    </div>
+                    <div class="border-t border-km-border pt-5 group cursor-default">
+                        <h5 class="font-serif text-3xl text-km-text_main mb-3 group-hover:text-km-copper transition-colors">Tâm lý học Không gian</h5>
+                        <p class="font-sans text-[10px] tracking-[0.2em] uppercase text-km-copper">Thấu hiểu sâu sắc</p>
+                    </div>
+                    <div class="border-t border-km-border pt-5 group cursor-default">
+                        <h5 class="font-serif text-3xl text-km-text_main mb-3 group-hover:text-km-copper transition-colors">Ánh sáng & Âm thanh</h5>
+                        <p class="font-sans text-[10px] tracking-[0.2em] uppercase text-km-copper">Đánh thức giác quan</p>
+                    </div>
+                    <div class="border-t border-km-border pt-5 group cursor-default">
+                        <h5 class="font-serif text-3xl text-km-text_main mb-3 group-hover:text-km-copper transition-colors">Nghệ nhân Thủ công</h5>
+                        <p class="font-sans text-[10px] tracking-[0.2em] uppercase text-km-copper">Chế tác độc bản</p>
+                    </div>
+                    <div class="border-t border-km-border pt-5 group cursor-default">
+                        <h5 class="font-serif text-3xl text-km-text_main mb-3 group-hover:text-km-copper transition-colors">Giám tuyển Nghệ thuật</h5>
+                        <p class="font-sans text-[10px] tracking-[0.2em] uppercase text-km-copper">Lựa chọn tinh hoa</p>
+                    </div>
+                    <div class="border-t border-km-border pt-5 group cursor-default">
+                        <h5 class="font-serif text-3xl text-km-text_main mb-3 group-hover:text-km-copper transition-colors">Stylist Tủ đồ cao cấp</h5>
+                        <p class="font-sans text-[10px] tracking-[0.2em] uppercase text-km-copper">Tôn vinh cá nhân</p>
+                    </div>
+                    <div class="border-t border-km-border pt-5 group cursor-default">
+                        <h5 class="font-serif text-3xl text-km-text_main mb-3 group-hover:text-km-copper transition-colors">Chuyên gia Cảnh quan</h5>
+                        <p class="font-sans text-[10px] tracking-[0.2em] uppercase text-km-copper">Hơi thở tự nhiên</p>
+                    </div>
+                    <div class="border-t border-km-border pt-5 group cursor-default">
+                        <h5 class="font-serif text-3xl text-km-text_main mb-3 group-hover:text-km-copper transition-colors">Chuyên gia Catering</h5>
+                        <p class="font-sans text-[10px] tracking-[0.2em] uppercase text-km-copper">Trải nghiệm ẩm thực</p>
+                    </div>
+                    <div class="border-t border-km-border pt-5 group cursor-default">
+                        <h5 class="font-serif text-3xl text-km-text_main mb-3 group-hover:text-km-copper transition-colors">Thiết kế Trải nghiệm</h5>
+                        <p class="font-sans text-[10px] tracking-[0.2em] uppercase text-km-copper">Khoảnh khắc đáng nhớ</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Cảm nhận gia chủ (Đầy đủ 3 nhận xét) -->
+        <section class="relative w-full min-h-screen flex items-center justify-center py-24">
+            <div class="relative z-10 w-full max-w-5xl mx-auto px-6 md:px-12 reveal-up">
+                <div class="text-center mb-16">
+                    <h2 class="font-serif text-5xl md:text-6xl text-km-text_main mb-6 tracking-wide">
+                        Cảm nhận <span class="text-km-copper">gia chủ.</span>
+                    </h2>
+                </div>
+
+                <!-- Glass Panel Tối -->
+                <div class="bg-km-panel p-8 md:p-14 mb-16 relative min-h-[400px] flex flex-col justify-center border border-km-border rounded-2xl">
+                    
+                    <!-- Slide 0: Vân Anh -->
+                    <div class="slide-content active" id="slide-0">
+                        <div class="flex justify-center mb-6 text-km-copper opacity-50">
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        </div>
+                        <blockquote class="text-center font-serif italic text-2xl md:text-4xl leading-relaxed md:leading-snug text-km-text_main mb-10 max-w-4xl mx-auto px-4 md:px-12">
+                            "Chúng tôi từng nghĩ mình biết rõ mình muốn gì cho đến khi có 13 phiên bản 3D trong tay mà vẫn không tự tin khởi công. Đó là lúc chúng tôi gặp Khởi Minh Homestyling. Họ không chỉ lắng nghe, mà còn giúp tôi khám phá những điều chúng tôi chưa từng nghĩ tới."
+                        </blockquote>
+                        <div class="text-center border-t border-km-border pt-6 max-w-xs mx-auto">
+                            <p class="font-sans font-medium tracking-[0.2em] text-[11px] uppercase text-km-copper mb-1">Ms. Vân Anh</p>
+                            <p class="font-sans font-light text-xs text-km-text_muted">Gia chủ Viên Villa</p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 1: Hương Đào -->
+                    <div class="slide-content" id="slide-1">
+                        <div class="flex justify-center mb-6 text-km-copper opacity-50">
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        </div>
+                        <blockquote class="text-center font-serif italic text-2xl md:text-4xl leading-relaxed md:leading-snug text-km-text_main mb-10 max-w-4xl mx-auto px-4 md:px-12">
+                            "Làm việc với Khởi Minh là một trải nghiệm hoàn toàn khác biệt. Họ không cạnh tranh với tôi, mà trở thành cánh tay phải, giúp tôi hiểu rõ gia chủ hơn và đồng hành sáng tạo nên những thiết kế hoàn hảo."
+                        </blockquote>
+                        <div class="text-center border-t border-km-border pt-6 max-w-xs mx-auto">
+                            <p class="font-sans font-medium tracking-[0.2em] text-[11px] uppercase text-km-copper mb-1">Ms. Hương Đào</p>
+                            <p class="font-sans font-light text-xs text-km-text_muted">Founder KGM Asia</p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: David -->
+                    <div class="slide-content" id="slide-2">
+                        <div class="flex justify-center mb-6 text-km-copper opacity-50">
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        </div>
+                        <blockquote class="text-center font-serif italic text-2xl md:text-4xl leading-relaxed md:leading-snug text-km-text_main mb-10 max-w-4xl mx-auto px-4 md:px-12">
+                            "Khởi Minh giúp chủ nhà kiên định từng chi tiết, từ vật liệu đến tiến độ, khiến công việc tổng thầu của chúng tôi trở nên dễ dàng hơn và đảm bảo chất lượng mức cao nhất."
+                        </blockquote>
+                        <div class="text-center border-t border-km-border pt-6 max-w-xs mx-auto">
+                            <p class="font-sans font-medium tracking-[0.2em] text-[11px] uppercase text-km-copper mb-1">Mr. David Larson</p>
+                            <p class="font-sans font-light text-xs text-km-text_muted">Tổng thầu thi công Falcon</p>
+                        </div>
+                    </div>
+
+                    <!-- Nút Mũi tên slider -->
+                    <button onclick="prevSlide()" class="nav-btn absolute left-4 md:-left-6 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-km-bg border border-km-border text-km-copper focus:outline-none z-20 rounded-full">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    
+                    <button onclick="nextSlide()" class="nav-btn absolute right-4 md:-right-6 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-km-bg border border-km-border text-km-copper focus:outline-none z-20 rounded-full">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                        <button onclick="goToSlide(0)" class="indicator w-2 h-2 bg-km-copper transition-all duration-300 w-4 rounded-full"></button>
+                        <button onclick="goToSlide(1)" class="indicator w-2 h-2 bg-km-border transition-all duration-300 rounded-full"></button>
+                        <button onclick="goToSlide(2)" class="indicator w-2 h-2 bg-km-border transition-all duration-300 rounded-full"></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Những dinh thự đầu tiên -->
+        <section class="py-24 px-6 md:px-12 max-w-[1400px] mx-auto reveal-up bg-km-bg">
+            <div class="text-center mb-20 max-w-3xl mx-auto">
+                <h2 class="font-serif text-5xl md:text-6xl text-km-text_main mb-6 tracking-tight">
+                    Những dinh thự <span class="text-km-copper">đầu tiên.</span>
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-16">
+                <a href="#" class="group block md:mt-12">
+                    <div class="img-zoom-wrapper aspect-[3/4] mb-6 rounded-2xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Viên Villa" class="img-zoom w-full h-full object-cover">
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-serif text-3xl text-km-text_main group-hover:text-km-copper transition-colors">Viên Villa</h3>
+                    </div>
+                </a>
+
+                <a href="#" class="group block">
+                    <div class="img-zoom-wrapper aspect-[3/4] md:aspect-[4/5] mb-6 rounded-2xl overflow-hidden shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="House of Legacy" class="img-zoom w-full h-full object-cover">
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-serif text-3xl text-km-text_main group-hover:text-km-copper transition-colors">House of Legacy</h3>
+                    </div>
+                </a>
+
+                <a href="#" class="group block md:mt-12">
+                    <div class="img-zoom-wrapper aspect-[3/4] mb-6 rounded-2xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Giandi Mansion" class="img-zoom w-full h-full object-cover">
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-serif text-3xl text-km-text_main group-hover:text-km-copper transition-colors">Giandi Mansion</h3>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 10. Footer -->
+    <footer id="lien-he" class="bg-km-bg text-km-text_main py-12 md:py-20 px-6 max-w-[1400px] mx-auto reveal-up border-t border-km-border">
+        
+        <div class="mb-16 text-center">
+            <h1 class="font-serif text-6xl md:text-8xl text-km-copper tracking-widest mb-4">
+                MANSION.
+            </h1>
+            <p class="font-sans font-light tracking-[0.4em] uppercase text-[10px] text-km-text_muted">
+                Kiến tạo di sản độc bản
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 text-km-text_muted text-sm md:text-base font-light border-t border-km-border pt-12">
+            <div class="md:col-span-5">
+                <h4 class="font-sans font-medium text-km-copper mb-4 tracking-[0.2em] uppercase text-[10px]">Office</h4>
+                <div class="space-y-3 leading-relaxed text-sm">
+                    <p>6 Lê Thánh Tông, Hoàn Kiếm, Hà Nội</p>
+                    <p>L17-11, Tầng 17, Vincom Center,<br> 72 Lê Thánh Tôn, Q.1, TP. HCM</p>
+                </div>
+            </div>
+            <div class="md:col-span-3 lg:col-span-2">
+                <h4 class="font-sans font-medium text-km-copper mb-4 tracking-[0.2em] uppercase text-[10px]">Phone</h4>
+                <a href="tel:+84904662339" class="hover:text-km-copper transition-colors inline-block text-sm">0904 662 339</a>
+            </div>
+            <div class="md:col-span-4 lg:col-span-3">
+                <h4 class="font-sans font-medium text-km-copper mb-4 tracking-[0.2em] uppercase text-[10px]">Email</h4>
+                <!-- Khôi phục lại đúng email gốc -->
+                <a href="mailto:homestyling@khoiminhcst.vn" class="hover:text-km-copper transition-colors inline-block break-all text-sm">homestyling@khoiminhcst.vn</a>
+            </div>
+            <div class="md:col-span-12 lg:col-span-2">
+                <h4 class="font-sans font-medium text-km-copper mb-4 tracking-[0.2em] lg:text-right uppercase text-[10px]">Social</h4>
+                <div class="flex items-center lg:justify-end space-x-5">
+                    <a href="#" class="text-km-text_muted hover:text-km-copper transition-colors text-sm">Fb.</a>
+                    <a href="#" class="text-km-text_muted hover:text-km-copper transition-colors text-sm">Ig.</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- TỔNG HỢP SCRIPTS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = { root: null, rootMargin: '0px 0px -50px 0px', threshold: 0.15 };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active', 'is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const revealElements = document.querySelectorAll('.reveal-up, .reveal-item');
+            setTimeout(() => { revealElements.forEach(el => observer.observe(el)); }, 100);
+
+            const firstAccordionItem = document.querySelector('.accordion-item');
+            if (firstAccordionItem) firstAccordionItem.classList.add('active');
+
+            window.openTab = function(evt, tabId) {
+                var tabContents = document.getElementsByClassName("tab-content");
+                for (var i = 0; i < tabContents.length; i++) tabContents[i].classList.remove("active");
+                var tabBtns = document.getElementsByClassName("tab-btn");
+                for (var i = 0; i < tabBtns.length; i++) tabBtns[i].classList.remove("active");
+                var selectedTab = document.getElementById(tabId);
+                setTimeout(() => { selectedTab.classList.add("active"); }, 10);
+                evt.currentTarget.classList.add("active");
+            };
+
+            window.toggleAccordion = function(button) {
+                const currentItem = button.parentElement;
+                const container = document.getElementById('accordion-container');
+                const allItems = container.querySelectorAll('.accordion-item');
+                const isCurrentlyActive = currentItem.classList.contains('active');
+                allItems.forEach(item => item.classList.remove('active'));
+                if (!isCurrentlyActive) currentItem.classList.add('active');
+            };
+
+            // Trả lại logic cho 3 Slide
+            let currentSlide = 0;
+            const totalSlides = 3; 
+            const slides = document.querySelectorAll('.slide-content');
+            const indicators = document.querySelectorAll('.indicator');
+
+            window.updateSlider = function() {
+                slides.forEach((slide, index) => {
+                    if (index === currentSlide) slide.classList.add('active');
+                    else slide.classList.remove('active');
+                });
+                indicators.forEach((dot, index) => {
+                    if (index === currentSlide) {
+                        dot.classList.replace('bg-km-border', 'bg-km-copper');
+                        dot.classList.add('w-4'); 
+                    } else {
+                        dot.classList.replace('bg-km-copper', 'bg-km-border');
+                        dot.classList.remove('w-4');
+                    }
+                });
+            };
+            window.nextSlide = function() { currentSlide = (currentSlide + 1) % totalSlides; updateSlider(); };
+            window.prevSlide = function() { currentSlide = (currentSlide - 1 + totalSlides) % totalSlides; updateSlider(); };
+            window.goToSlide = function(index) { currentSlide = index; updateSlider(); };
+            updateSlider();
+        });
+    </script>
+</body>
+</html>
